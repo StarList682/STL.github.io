@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamster Kombat Clicker</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #333 25%, transparent 25%) -50px 0,
+                        linear-gradient(225deg, #333 25%, transparent 25%) -50px 0,
+                        linear-gradient(315deg, #333 25%, transparent 25%),
+                        linear-gradient(45deg, #333 25%, transparent 25%);
+            background-size: 100px 100px;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #hamster {
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #hamster:hover {
+            transform: scale(1.1);
+        }
+        #hamster:active {
+            transform: scale(0.9);
+        }
+        #stats {
+            margin-top: 20px;
+            text-align: center;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #stats p {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #a3a3a3;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            background-color: #919191;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .coin-popup {
+            position: absolute;
+            color: yellow;
+            font-weight: bold;
+            animation: fadeout 1s forwards;
+        }
+        @keyframes fadeout {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+        .promo-input {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            width: 150px;
+            text-align: center;
+            color: black;
+        }
+        .apply-promo {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+        }
+        .apply-promo:hover {
+            background-color: #45a049;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .apply-promo:active {
+            transform: scale(0.95);
+        }
+        .promo-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            z-index: 1000;
+        }
+        .promo-modal input {
+            margin: 10px;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            width: 200px;
+            text-align: center;
+        }
+        .promo-modal button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+        }
+        .promo-modal button:hover {
+            background-color: #45a049;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .promo-modal button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <img id="hamster" src="https://i.ibb.co/1dqcXK6/Starcoin.png" alt="Hamster Icon">
+    <div id="stats">
+        <p>Clicks: <span id="clicks">0</span></p>
+        <p>STL: <span id="coins">0</span></p>
+        <button id="upgrade">Upgrade (Cost: 20 STL)</button>
+        <button id="promoButton" style="background-color: #4CAF50;">Promo Code</button>
+    </div>
+
+    <div class="promo-modal" id="promoModal">
+        <h2 style="color: white;">Enter Promo Code</h2>
+        <input type="text" id="promoInput" class="promo-input" placeholder="Enter your promo code">
+        <button id="applyPromo" class="apply-promo">Apply Promo</button>
+        <button id="closeModal" class="apply-promo" style="background-color: #f44336;">Close</button>
+    </div>
+
+    <script>
+        let clicks = parseInt(localStorage.getItem('clicks')) || 0;
+        let coins = parseInt(localStorage.getItem('coins')) || 0;
+        let clickPower = parseInt(localStorage.getItem('clickPower')) || 1;
+        let usedPromoCodes = JSON.parse(localStorage.getItem('usedPromoCodes')) || [];
+
+        const hamster = document.getElementById('hamster');
+        const clicksDisplay = document.getElementById('clicks');
+        const coinsDisplay = document.getElementById('coins');
+        const upgradeButton = document.getElementById('upgrade');
+        const promoButton = document.getElementById('promoButton');
+        const promoModal = document.getElementById('promoModal');
+        const promoInput = document.getElementById('promoInput');
+        const applyPromoButton = document.getElementById('applyPromo');
+        const closeModalButton = document.getElementById('closeModal');
+
+        clicksDisplay.textContent = clicks;
+        coinsDisplay.textContent = coins;
+        upgradeButton.textContent = `Upgrade (Cost: ${clickPower * 20} STL)`; // Установка стоимости прокачки на 20 STL
+
+        hamster.addEventListener('click', (e) => {
+            clicks++;
+            coins += clickPower; // Каждое нажатие дает STL в зависимости от силы клика
+            clicksDisplay.textContent = clicks;
+            coinsDisplay.textContent = coins;
+            localStorage.setItem('clicks', clicks);
+            localStorage.setItem('coins', coins);
+
+            // Создание анимации для STL
+            const coinPopup = document.createElement('div');
+            coinPopup.className = 'coin-popup';
+            coinPopup.textContent = `+${clickPower} STL`;
+            coinPopup.style.left = `${e.pageX}px`;
+            coinPopup.style.top = `${e.pageY}px`;
+            document.body.appendChild(coinPopup);
+
+            // Удаление анимации после завершения
+            coinPopup.addEventListener('animationend', () => {
+                coinPopup.remove();
+            });
+        });
+
+        upgradeButton.addEventListener('click', () => {
+            const upgradeCost = clickPower * 20; // Установка стоимости прокачки на 20 STL
+            if (coins >= upgradeCost) {
+                coins -= upgradeCost;
+                clickPower++;
+                coinsDisplay.textContent = coins;
+                upgradeButton.textContent = `Upgrade (Cost: ${clickPower * 20} STL)`; // Обновление текста кнопки
+                localStorage.setItem('coins', coins);
+                localStorage.setItem('clickPower', clickPower);
+            }
+        });
+
+        promoButton.addEventListener('click', () => {
+            promoModal.style.display = 'block';
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            promoModal.style.display = 'none';
+        });
+
+        applyPromoButton.addEventListener('click', () => {
+            const promoCode = promoInput.value.trim().toUpperCase();
+            if (usedPromoCodes.includes(promoCode)) {
+                alert('Промокод уже использован.');
+            } else {
+                switch (promoCode) {
+                    case 'STL':
+                        coins += 10000;
+                        break;
+                    case 'SECRETSTL':
+                        coins += 5000;
+                        break;
+                    default:
+                        alert('Неверный промокод.');
+                        return;
+                }
+                coinsDisplay.textContent = coins;
+                localStorage.setItem('coins', coins);
+                usedPromoCodes.push(promoCode);
+                localStorage.setItem('usedPromoCodes', JSON.stringify(usedPromoCodes));
+                alert(`Промокод "${promoCode}" успешно применен!`);
+                promoModal.style.display = 'none';
+            }
+            promoInput.value = '';
+        });
+
+        // Закрывать модальное окно при клике вне его области
+        window.addEventListener('click', (e) => {
+            if (e.target === promoModal) {
+                promoModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
