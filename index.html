@@ -21,6 +21,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            user-select: none; /* Prevent text selection */
         }
         #hamster {
             width: 150px;
@@ -69,6 +70,7 @@
             color: yellow;
             font-weight: bold;
             animation: fadeout 1s forwards;
+            user-select: none; /* Prevent text selection */
         }
         @keyframes fadeout {
             0% {
@@ -146,6 +148,19 @@
         .promo-modal button:active {
             transform: scale(0.95);
         }
+        .energy-bar-container {
+            width: 100%;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .energy-bar {
+            height: 100%;
+            background-color: #76c7c0;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -153,7 +168,13 @@
     <div id="stats">
         <p>Clicks: <span id="clicks">0</span></p>
         <p>STL: <span id="coins">0</span></p>
-        <button id="upgrade">Upgrade (Cost: 20 STL)</button>
+        <div class="energy-bar-container">
+            <div id="energy-bar" class="energy-bar"></div>
+        </div>
+        <p>Energy: <span id="energy">1000</span>/<span id="energy-limit">1000</span></p>
+        <button id="upgrade">Upgrade Click Power (Cost: 20 STL)</button>
+        <button id="energyUpgrade">Increase Energy Limit (Cost: 50 STL)</button>
+        <button id="recoveryUpgrade">Increase Recovery Speed (Cost: 100 STL)</button>
         <button id="promoButton" style="background-color: #4CAF50;">Promo Code</button>
     </div>
 
@@ -167,13 +188,26 @@
     <script>
         let clicks = parseInt(localStorage.getItem('clicks')) || 0;
         let coins = parseInt(localStorage.getItem('coins')) || 0;
-        let clickPower = parseInt(localStorage.getItem('clickPower')) || 1;
+        let clickPower = parseFloat(localStorage.getItem('clickPower')) || 1;
+        let displayClickPower = Math.floor(clickPower);
         let usedPromoCodes = JSON.parse(localStorage.getItem('usedPromoCodes')) || [];
+        let energy = parseInt(localStorage.getItem('energy')) || 1000;
+        let energyLimit = parseFloat(localStorage.getItem('energyLimit')) || 1000;
+        let displayEnergyLimit = Math.floor(energyLimit);
+        let recoverySpeed = parseFloat(localStorage.getItem('recoverySpeed')) || 0.1;
+        let clickUpgradeCost = parseInt(localStorage.getItem('clickUpgradeCost')) || 20;
+        let energyUpgradeCost = parseInt(localStorage.getItem('energyUpgradeCost')) || 50;
+        let recoveryUpgradeCost = parseInt(localStorage.getItem('recoveryUpgradeCost')) || 100;
 
         const hamster = document.getElementById('hamster');
         const clicksDisplay = document.getElementById('clicks');
         const coinsDisplay = document.getElementById('coins');
+        const energyDisplay = document.getElementById('energy');
+        const energyBar = document.getElementById('energy-bar');
+        const energyLimitDisplay = document.getElementById('energy-limit');
         const upgradeButton = document.getElementById('upgrade');
+        const energyUpgradeButton = document.getElementById('energyUpgrade');
+        const recoveryUpgradeButton = document.getElementById('recoveryUpgrade');
         const promoButton = document.getElementById('promoButton');
         const promoModal = document.getElementById('promoModal');
         const promoInput = document.getElementById('promoInput');
@@ -182,39 +216,79 @@
 
         clicksDisplay.textContent = clicks;
         coinsDisplay.textContent = coins;
-        upgradeButton.textContent = `Upgrade (Cost: ${clickPower * 20} STL)`; // Установка стоимости прокачки на 20 STL
+        energyDisplay.textContent = Math.floor(energy);
+        energyLimitDisplay.textContent = displayEnergyLimit;
+        energyBar.style.width = `${(energy / displayEnergyLimit) * 100}%`;
+        upgradeButton.textContent = `Upgrade Click Power (Cost: ${clickUpgradeCost} STL)`;
+        energyUpgradeButton.textContent = `Increase Energy Limit (Cost: ${energyUpgradeCost} STL)`;
+        recoveryUpgradeButton.textContent = `Increase Recovery Speed (Cost: ${recoveryUpgradeCost} STL)`;
 
         hamster.addEventListener('click', (e) => {
-            clicks++;
-            coins += clickPower; // Каждое нажатие дает STL в зависимости от силы клика
-            clicksDisplay.textContent = clicks;
-            coinsDisplay.textContent = coins;
-            localStorage.setItem('clicks', clicks);
-            localStorage.setItem('coins', coins);
+            if (energy > 0) {
+                clicks++;
+                coins += displayClickPower;
+                energy--;
+                clicksDisplay.textContent = clicks;
+                coinsDisplay.textContent = coins;
+                energyDisplay.textContent = Math.floor(energy);
+                energyBar.style.width = `${(energy / displayEnergyLimit) * 100}%`;
+                localStorage.setItem('clicks', clicks);
+                localStorage.setItem('coins', coins);
+                localStorage.setItem('energy', energy);
 
-            // Создание анимации для STL
-            const coinPopup = document.createElement('div');
-            coinPopup.className = 'coin-popup';
-            coinPopup.textContent = `+${clickPower} STL`;
-            coinPopup.style.left = `${e.pageX}px`;
-            coinPopup.style.top = `${e.pageY}px`;
-            document.body.appendChild(coinPopup);
+                const coinPopup = document.createElement('div');
+                coinPopup.className = 'coin-popup';
+                coinPopup.textContent = `+${displayClickPower} STL`;
+                coinPopup.style.left = `${e.pageX}px`;
+                coinPopup.style.top = `${e.pageY}px`;
+                document.body.appendChild(coinPopup);
 
-            // Удаление анимации после завершения
-            coinPopup.addEventListener('animationend', () => {
-                coinPopup.remove();
-            });
+                coinPopup.addEventListener('animationend', () => {
+                    coinPopup.remove();
+                });
+            }
         });
 
         upgradeButton.addEventListener('click', () => {
-            const upgradeCost = clickPower * 20; // Установка стоимости прокачки на 20 STL
-            if (coins >= upgradeCost) {
-                coins -= upgradeCost;
-                clickPower++;
+            if (coins >= clickUpgradeCost) {
+                coins -= clickUpgradeCost;
+                clickPower = clickPower * 1.8;
+                displayClickPower = Math.floor(clickPower);
+                clickUpgradeCost = Math.floor(clickUpgradeCost * 2.5);
                 coinsDisplay.textContent = coins;
-                upgradeButton.textContent = `Upgrade (Cost: ${clickPower * 20} STL)`; // Обновление текста кнопки
+                upgradeButton.textContent = `Upgrade Click Power (Cost: ${clickUpgradeCost} STL)`;
                 localStorage.setItem('coins', coins);
                 localStorage.setItem('clickPower', clickPower);
+                localStorage.setItem('clickUpgradeCost', clickUpgradeCost);
+            }
+        });
+
+        energyUpgradeButton.addEventListener('click', () => {
+            if (coins >= energyUpgradeCost) {
+                coins -= energyUpgradeCost;
+                energyLimit =energyLimit * 1.1;
+                displayEnergyLimit =  Math.floor(energyLimit);
+                energyUpgradeCost = Math.floor(energyUpgradeCost * 2.5);
+                coinsDisplay.textContent = coins;
+                energyLimitDisplay.textContent = displayEnergyLimit;
+                energyBar.style.width = `${(energy / displayEnergyLimit) * 100}%`;
+                energyUpgradeButton.textContent = `Increase Energy Limit (Cost: ${energyUpgradeCost} STL)`;
+                localStorage.setItem('coins', coins);
+                localStorage.setItem('energyLimit', energyLimit);
+                localStorage.setItem('energyUpgradeCost', energyUpgradeCost);
+            }
+        });
+
+        recoveryUpgradeButton.addEventListener('click', () => {
+            if (coins >= recoveryUpgradeCost) {
+                coins -= recoveryUpgradeCost;
+                recoverySpeed = parseFloat((recoverySpeed + 0.1).toFixed(1));
+                recoveryUpgradeCost = Math.floor(recoveryUpgradeCost * 3);
+                coinsDisplay.textContent = coins;
+                recoveryUpgradeButton.textContent = `Increase Recovery Speed (Cost: ${recoveryUpgradeCost} STL)`;
+                localStorage.setItem('coins', coins);
+                localStorage.setItem('recoverySpeed', recoverySpeed);
+                localStorage.setItem('recoveryUpgradeCost', recoveryUpgradeCost);
             }
         });
 
@@ -238,6 +312,12 @@
                     case 'SECRETSTL':
                         coins += 5000;
                         break;
+                    case 'LEVMASHAR':
+                        coins += 1000000000000;
+                        break;
+                    case '69':
+                        coins += 69;
+                        break;
                     default:
                         alert('Неверный промокод.');
                         return;
@@ -252,12 +332,22 @@
             promoInput.value = '';
         });
 
-        // Закрывать модальное окно при клике вне его области
+        setInterval(() => {
+            if (energy < displayEnergyLimit) {
+                energy += recoverySpeed;
+                if (energy > displayEnergyLimit) energy = displayEnergyLimit;
+                energyDisplay.textContent = Math.floor(energy);
+                energyBar.style.width = `${(energy / displayEnergyLimit) * 100}%`;
+                localStorage.setItem('energy', energy);
+            }
+        }, 1000);
+
         window.addEventListener('click', (e) => {
             if (e.target === promoModal) {
                 promoModal.style.display = 'none';
             }
         });
+	//made with help of Levmashar ;)
     </script>
 </body>
 </html>
