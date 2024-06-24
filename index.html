@@ -1,87 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STL Clicker</title>
     <style>
+        .roboto-thin {
+            font-family: "Roboto", sans-serif;
+            font-weight: 100;
+            font-style: normal;
+        }
+
+        .roboto-light {
+            font-family: "Roboto", sans-serif;
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        .roboto-regular {
+            font-family: "Roboto", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .roboto-medium {
+            font-family: "Roboto", sans-serif;
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        .roboto-bold {
+            font-family: "Roboto", sans-serif;
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        .roboto-black {
+            font-family: "Roboto", sans-serif;
+            font-weight: 900;
+            font-style: normal;
+        }
+
+        .roboto-thin-italic {
+            font-family: "Roboto", sans-serif;
+            font-weight: 100;
+            font-style: italic;
+        }
+
+        .roboto-light-italic {
+            font-family: "Roboto", sans-serif;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        .roboto-regular-italic {
+            font-family: "Roboto", sans-serif;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        .roboto-medium-italic {
+            font-family: "Roboto", sans-serif;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .roboto-bold-italic {
+            font-family: "Roboto", sans-serif;
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        .roboto-black-italic {
+            font-family: "Roboto", sans-serif;
+            font-weight: 900;
+            font-style: italic;
+        }
+        
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: linear-gradient(135deg, #333 25%, transparent 25%) -50px 0,
-                        linear-gradient(225deg, #333 25%, transparent 25%) -50px 0,
-                        linear-gradient(315deg, #333 25%, transparent 25%),
-                        linear-gradient(45deg, #333 25%, transparent 25%);
+            background: linear-gradient(135deg, #2B2F4F 25%, transparent 25%) -50px 0,
+                        linear-gradient(225deg, #2E3B55 25%, transparent 25%) -50px 0,
+                        linear-gradient(315deg, #2B2F4F 25%, transparent 25%),
+                        linear-gradient(45deg, #2E3B55 25%, transparent 25%);
             background-size: 100px 100px;
-            background-color: #000;
-            font-family: Arial, sans-serif;
+            background-color: #088395;
+            font-family: "Roboto", sans-serif;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            user-select: none; /* Prevent text selection */
+            user-select: none;
+            /* Prevent text selection */
         }
+
         #hamster {
             width: 150px;
             height: 150px;
             cursor: pointer;
             transition: transform 0.2s;
+            user-select: none;
         }
+
         #hamster:hover {
             transform: scale(1.1);
         }
+
         #hamster:active {
             transform: scale(0.9);
         }
+
         #stats {
             margin-top: 20px;
             text-align: center;
-            background: #ffffff;
+            background: #ffeaeaf6;
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         #stats p {
             margin: 10px 0;
-            font-size: 18px;
+            font-size: 23px;
         }
+
         button {
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
-            background-color: #a3a3a3;
+            background-color: #42db8c;
             color: white;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
         }
+
         button:hover {
-            background-color: #919191;
+            background-color: #2bd67e;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
+
         button:active {
             transform: scale(0.95);
         }
+
         .coin-popup {
             position: absolute;
             color: yellow;
             font-weight: bold;
             animation: fadeout 1s forwards;
-            user-select: none; /* Prevent text selection */
+            user-select: none;
+            /* Prevent text selection */
         }
+
         @keyframes fadeout {
             0% {
                 opacity: 1;
                 transform: translateY(0);
             }
+
             100% {
                 opacity: 0;
                 transform: translateY(-50px);
             }
         }
+
         .promo-input {
             padding: 8px;
             font-size: 14px;
@@ -91,24 +182,28 @@
             text-align: center;
             color: black;
         }
+
         .apply-promo {
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
-            background-color: #4CAF50;
+            background-color: #84c9c2;
             color: white;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
         }
+
         .apply-promo:hover {
-            background-color: #45a049;
+            background-color: #84c9c2;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
+
         .apply-promo:active {
             transform: scale(0.95);
         }
+
         .promo-modal {
             display: none;
             position: fixed;
@@ -121,6 +216,7 @@
             text-align: center;
             z-index: 1000;
         }
+
         .promo-modal input {
             margin: 10px;
             padding: 8px;
@@ -130,24 +226,28 @@
             width: 200px;
             text-align: center;
         }
+
         .promo-modal button {
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
-            background-color: #4CAF50;
+            background-color: #00d647;
             color: white;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
         }
+
         .promo-modal button:hover {
-            background-color: #45a049;
+            background-color: #00e64d;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
+
         .promo-modal button:active {
             transform: scale(0.95);
         }
+
         .energy-bar-container {
             width: 100%;
             height: 20px;
@@ -156,6 +256,7 @@
             overflow: hidden;
             margin-top: 10px;
         }
+
         .energy-bar {
             height: 100%;
             background-color: #76c7c0;
@@ -163,8 +264,9 @@
         }
     </style>
 </head>
-<body>
-    <img id="hamster" src="https://i.ibb.co/1dqcXK6/Starcoin.png" alt="Hamster Icon">
+
+<body class="roboto-black">
+    <img id="hamster" src="https://i.ibb.co/1dqcXK6/Starcoin.png" alt="Hamster Icon" draggable="false">
     <div id="stats">
         <p>Clicks: <span id="clicks">0</span></p>
         <p>STL: <span id="coins">0</span></p>
@@ -172,10 +274,11 @@
             <div id="energy-bar" class="energy-bar"></div>
         </div>
         <p>Energy: <span id="energy">1000</span>/<span id="energy-limit">1000</span></p>
-        <button id="upgrade">Upgrade Click Power (Cost: 20 STL)</button>
-        <button id="energyUpgrade">Increase Energy Limit (Cost: 50 STL)</button>
-        <button id="recoveryUpgrade">Increase Recovery Speed (Cost: 100 STL)</button>
-        <button id="promoButton" style="background-color: #4CAF50;">Promo Code</button>
+        <button id="upgrade">Syms</button>
+        <button id="energyUpgrade">davay</button>
+        <button id="recoveryUpgrade">araj</button>
+        <br>
+        <button id="promoButton">Promo Code</button>
     </div>
 
     <div class="promo-modal" id="promoModal">
@@ -219,18 +322,30 @@
         energyDisplay.textContent = Math.floor(energy);
         energyLimitDisplay.textContent = displayEnergyLimit;
         energyBar.style.width = `${(energy / displayEnergyLimit) * 100}%`;
-        upgradeButton.textContent = `Upgrade Click Power (Cost: ${clickUpgradeCost} STL)`;
-        energyUpgradeButton.textContent = `Increase Energy Limit (Cost: ${energyUpgradeCost} STL)`;
-        recoveryUpgradeButton.textContent = `Increase Recovery Speed (Cost: ${recoveryUpgradeCost} STL)`;
+        upgradeButton.innerHTML = `👆<br>${clickUpgradeCost} STL`;
+        energyUpgradeButton.innerHTML = `🔋<br>${energyUpgradeCost} STL`;
+        recoveryUpgradeButton.innerHTML = `⚡<br>${recoveryUpgradeCost} STL`;
+
+        function formatNumber(number) {
+        if (number >= 1e9) {
+            return (number / 1e9).toFixed(1) + 'B';
+        } else if (number >= 1e6) {
+            return (number / 1e6).toFixed(1) + 'M';
+        } else if (number >= 1e3) {
+            return (number / 1e3).toFixed(1) + 'K';
+        } else {
+            return number.toString();
+        }
+    }
 
         hamster.addEventListener('click', (e) => {
             if (energy > 0) {
                 clicks++;
                 coins += displayClickPower;
                 energy--;
-                clicksDisplay.textContent = clicks;
-                coinsDisplay.textContent = coins;
-                energyDisplay.textContent = Math.floor(energy);
+                clicksDisplay.textContent = formatNumber(clicks);
+                coinsDisplay.textContent = formatNumber(coins);
+                energyDisplay.textContent = formatNumber(Math.floor(energy));
                 energyBar.style.width = `${(energy / displayEnergyLimit) * 100}%`;
                 localStorage.setItem('clicks', clicks);
                 localStorage.setItem('coins', coins);
@@ -238,7 +353,7 @@
 
                 const coinPopup = document.createElement('div');
                 coinPopup.className = 'coin-popup';
-                coinPopup.textContent = `+${displayClickPower} STL`;
+                coinPopup.textContent = `+${formatNumber(displayClickPower)} STL`;
                 coinPopup.style.left = `${e.pageX}px`;
                 coinPopup.style.top = `${e.pageY}px`;
                 document.body.appendChild(coinPopup);
@@ -255,8 +370,8 @@
                 clickPower = clickPower * 1.8;
                 displayClickPower = Math.floor(clickPower);
                 clickUpgradeCost = Math.floor(clickUpgradeCost * 2.5);
-                coinsDisplay.textContent = coins;
-                upgradeButton.textContent = `Upgrade Click Power (Cost: ${clickUpgradeCost} STL)`;
+                coinsDisplay.textContent = formatNumber(coins);
+                upgradeButton.innerHTML = `👆<br>${formatNumber(clickUpgradeCost)} STL`;
                 localStorage.setItem('coins', coins);
                 localStorage.setItem('clickPower', clickPower);
                 localStorage.setItem('clickUpgradeCost', clickUpgradeCost);
@@ -266,13 +381,13 @@
         energyUpgradeButton.addEventListener('click', () => {
             if (coins >= energyUpgradeCost) {
                 coins -= energyUpgradeCost;
-                energyLimit =energyLimit * 1.1;
-                displayEnergyLimit =  Math.floor(energyLimit);
+                energyLimit = energyLimit * 1.1;
+                displayEnergyLimit = Math.floor(energyLimit);
                 energyUpgradeCost = Math.floor(energyUpgradeCost * 2.5);
-                coinsDisplay.textContent = coins;
-                energyLimitDisplay.textContent = displayEnergyLimit;
+                coinsDisplay.textContent = formatNumber(coins);
+                energyLimitDisplay.textContent = formatNumber(displayEnergyLimit);
                 energyBar.style.width = `${(energy / displayEnergyLimit) * 100}%`;
-                energyUpgradeButton.textContent = `Increase Energy Limit (Cost: ${energyUpgradeCost} STL)`;
+                energyUpgradeButton.innerHTML = `🔋<br>${formatNumber(energyUpgradeCost)} STL`;
                 localStorage.setItem('coins', coins);
                 localStorage.setItem('energyLimit', energyLimit);
                 localStorage.setItem('energyUpgradeCost', energyUpgradeCost);
@@ -284,8 +399,8 @@
                 coins -= recoveryUpgradeCost;
                 recoverySpeed = parseFloat((recoverySpeed + 0.1).toFixed(1));
                 recoveryUpgradeCost = Math.floor(recoveryUpgradeCost * 3);
-                coinsDisplay.textContent = coins;
-                recoveryUpgradeButton.textContent = `Increase Recovery Speed (Cost: ${recoveryUpgradeCost} STL)`;
+                coinsDisplay.textContent = formatNumber(coins);
+                recoveryUpgradeButton.innerHTML = `⚡<br>${formatNumber(recoveryUpgradeCost)} STL`;
                 localStorage.setItem('coins', coins);
                 localStorage.setItem('recoverySpeed', recoverySpeed);
                 localStorage.setItem('recoveryUpgradeCost', recoveryUpgradeCost);
@@ -347,7 +462,7 @@
                 promoModal.style.display = 'none';
             }
         });
-	//made with help of Levmashar ;)
+        //made with help of Levmashar ;)
     </script>
 </body>
 </html>
