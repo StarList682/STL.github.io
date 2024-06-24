@@ -318,14 +318,14 @@
         const applyPromoButton = document.getElementById('applyPromo');
         const closeModalButton = document.getElementById('closeModal');
 
-        clicksDisplay.textContent = clicks;
-        coinsDisplay.textContent = coins;
-        energyDisplay.textContent = Math.floor(energy);
-        energyLimitDisplay.textContent = displayEnergyLimit;
+        clicksDisplay.textContent = formatNumber(clicks);
+        coinsDisplay.textContent = formatNumber(coins);
+        energyDisplay.textContent = formatNumber(Math.floor(energy));
+        energyLimitDisplay.textContent = formatNumber(displayEnergyLimit);
         energyBar.style.width = `${(energy / displayEnergyLimit) * 100}%`;
-        upgradeButton.innerHTML = `👆<br>${clickUpgradeCost} STL`;
-        energyUpgradeButton.innerHTML = `🔋<br>${energyUpgradeCost} STL`;
-        recoveryUpgradeButton.innerHTML = `⚡<br>${recoveryUpgradeCost} STL`;
+        upgradeButton.innerHTML = `👆<br>${formatNumber(clickUpgradeCost)} STL`;
+        energyUpgradeButton.innerHTML = `🔋<br>${formatNumber(energyUpgradeCost)} STL`;
+        recoveryUpgradeButton.innerHTML = `⚡<br>${formatNumber(recoveryUpgradeCost)} STL`;
 
         function formatNumber(number) {
         if (number >= 1e9) {
