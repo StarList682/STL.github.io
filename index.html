@@ -437,7 +437,7 @@
                         alert('Неверный промокод.');
                         return;
                 }
-                coinsDisplay.textContent = coins;
+                coinsDisplay.textContent = formatNumber(coins);
                 localStorage.setItem('coins', coins);
                 usedPromoCodes.push(promoCode);
                 localStorage.setItem('usedPromoCodes', JSON.stringify(usedPromoCodes));
